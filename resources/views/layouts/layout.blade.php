@@ -12,7 +12,13 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @yield('css')
 
-    <title>{{ config('app.name', 'HOTS Info') }}</title>
+    <title>
+        @if(View::hasSection('title'))
+            {{ config('app.name', 'HOTS Info') }} – @yield('title')
+        @else
+            {{ config('app.name', 'HOTS Info') }}
+        @endif
+    </title>
 </head>
 <body>
 @include('layouts.navbar')
