@@ -9,32 +9,40 @@
 
     <div class="row">
         <div class="col">
-            <table class="table table-sm">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Hero</th>
-                    <th>Games</th>
-                    <th>Winrate</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @foreach($heroes as $key => $hero)
-                    <tr id="">
-                        <td>
-                            <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$hero->slug.'.jpg') }}"
-                                 alt="{{ $hero->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
-                        </td>
-                        <td class="align-middle">
-                            <a href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
-                        </td>
-                        <td class="align-middle">Coming soon…</td>
-                        <td class="align-middle">Coming soon…</td>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Hero</th>
+                        <th>Games</th>
+                        <th class="w-25">Winrate</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                    @foreach($heroes as $key => $hero)
+                        @if ($hero->games > 1)
+                            <tr id="">
+                                <td>
+                                    <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$hero->slug.'.jpg') }}" alt="{{ $hero->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                </td>
+                                <td class="align-middle">
+                                    <a href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
+                                </td>
+                                <td class="align-middle">{{ $hero->readable_games }}</td>
+                                <td class="align-middle text-center">
+                                    {{ $hero->winrate }}%
+                                    <div class="progress" style="height: 2px">
+                                        <div class="progress-bar @if($hero->winrate >= 50) bg-success @else bg-danger @endif" role="progressbar" style="width: {{ $hero->winrate }}%;" aria-valuenow="{{ $hero->winrate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

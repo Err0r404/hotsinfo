@@ -50,4 +50,34 @@ class Controller extends BaseController
         return $result;
     }
     
+    
+    /**
+     * Convert large numbers to a human readable format : 1200 => 1.2K
+     *
+     * @param        $num
+     * @param int    $places
+     * @param string $type
+     *
+     * @return string
+     */
+    function numbertoHumanReadableFormat($num, $places = 1, $type = 'metric'){
+        if ($type == 'metric') {
+            $k = 'K'; $m = 'M';
+        }
+        else {
+            $k = ' thousand'; $m = ' million';
+        }
+        
+        if ($num < 1000) {
+            $num_format = number_format($num);
+        }
+        else if ($num < 1000000) {
+            $num_format = rtrim(rtrim(number_format($num / 1000, $places), 0), '.') . $k;
+        }
+        else {
+            $num_format = rtrim(rtrim(number_format($num / 1000000, $places), 0), '.') . $m;
+        }
+        
+        return $num_format;
+    }
 }

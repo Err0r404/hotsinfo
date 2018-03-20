@@ -16,13 +16,17 @@ class HeroController extends Controller {
         $heroes = DB::table('heroes')
             ->select(
                 'heroes.id',
-                'heroes.name'
+                'heroes.name',
+                'heroes.games',
+                'heroes.games as readable_games',
+                DB::raw('ROUND((victories/games)*100,2) AS winrate')
             )
             ->orderBy('heroes.name')
             ->get();
     
         foreach ($heroes as $hero) {
-            $hero->slug = str_slug($hero->name);
+            $hero->slug  = str_slug($hero->name);
+            $hero->readable_games = $this->numbertoHumanReadableFormat($hero->games);
         }
         
         return view('heroes.index', ['heroes' => $heroes]);
@@ -54,7 +58,7 @@ class HeroController extends Controller {
      * @return Response
      */
     public function show($id) {
-    
+
     }
     
     /**
