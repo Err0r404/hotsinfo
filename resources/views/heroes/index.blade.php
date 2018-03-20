@@ -11,11 +11,11 @@
         <div class="col">
             <div class="table-responsive">
                 <table class="table table-sm">
-                    <thead>
+                    <thead class="thead-dark">
                     <tr>
                         <th></th>
                         <th>Hero</th>
-                        <th>Games</th>
+                        <th>Pick</th>
                         <th class="w-25">Winrate</th>
                     </tr>
                     </thead>
@@ -25,12 +25,18 @@
                         @if ($hero->games > 1)
                             <tr id="">
                                 <td>
-                                    <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$hero->slug.'.jpg') }}" alt="{{ $hero->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                    <a href="{{ url('heroes/'.$hero->id) }}">
+                                        <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$hero->slug.'.jpg') }}" alt="{{ $hero->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                    </a>
                                 </td>
                                 <td class="align-middle">
                                     <a href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
                                 </td>
-                                <td class="align-middle">{{ $hero->readable_games }}</td>
+                                <td class="align-middle">
+                                    <span data-toggle="tooltip" data-placement="top" data-container="body" title="{{ $hero->games }}">
+                                        {{ $hero->readable_games }}
+                                    </span>
+                                </td>
                                 <td class="align-middle text-center">
                                     {{ $hero->winrate }}%
                                     <div class="progress" style="height: 2px">
