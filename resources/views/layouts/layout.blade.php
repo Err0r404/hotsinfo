@@ -23,7 +23,7 @@
 <body>
 @include('layouts.navbar')
 
-<div class="container">
+<div class="container mt-5">
     @yield('container')
 </div>
 
