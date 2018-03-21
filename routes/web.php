@@ -19,6 +19,8 @@ Route::get('/', function(){
 // Heroes
 Route::get('/heroes', 'HeroController@index')->name('heroes');
 Route::get('/heroes/{id}', 'HeroController@show');
+Route::get('/heroes/{id}/enemies', 'HeroController@enemies');
+Route::get('/heroes/{id}/allies', 'HeroController@allies');
 
 
 Route::resource('map', 'MapController');

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Talent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class HeroController extends Controller {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -78,6 +78,7 @@ class HeroController extends Controller {
             $hero->slug  = str_slug($hero->name);
             $hero->readable_games = $this->numbertoHumanReadableFormat($hero->games);
         }
+        $hero = $heroes['0'];
         
         // Get talents
         $talents = DB::table('participation_talent')
@@ -112,7 +113,31 @@ class HeroController extends Controller {
                 $talent->popularity = round(($talent->pick/$sumPick)*100,2);
             }
         }
+    
+        // Get enemies from Cache
+        $enemies = Cache::get($id.'-enemies', []);
         
+        // Get enemies from Cache
+        $allies = Cache::get($id.'-allies', []);
+        
+        return view(
+            'heroes.show',
+            [
+                'hero'    => $hero,
+                'talents' => $talents,
+                'enemies' => $enemies,
+                'allies'  => $allies,
+            ]
+        );
+    
+    }
+    
+    /**
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function enemies($id){
         // Get Heroes stats against the chosen Hero
         $enemies = DB::table('participations')
             ->join('games', 'participations.game_id', '=', 'games.id')
@@ -134,12 +159,24 @@ class HeroController extends Controller {
             ->orderBy('games', 'desc')
             ->orderBy('winrate', 'desc')
             ->get();
-        
+    
         foreach ($enemies as $enemy){
             $enemy->slug  = str_slug($enemy->name);
             $enemy->readable_games = $this->numbertoHumanReadableFormat($enemy->games);
         }
     
+        $expiresAt = now()->addDays(7);
+        Cache::put($id.'-enemies', $enemies, $expiresAt);
+        
+        return response()->json($enemies);
+    }
+    
+    /**
+     * @param $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function allies($id){
         // Get Heroes stats with the chosen Hero
         $allies = DB::table('participations')
             ->join('games', 'participations.game_id', '=', 'games.id')
@@ -167,16 +204,10 @@ class HeroController extends Controller {
             $ally->readable_games = $this->numbertoHumanReadableFormat($ally->games);
         }
     
-        return view(
-            'heroes.show',
-            [
-                'hero'    => $heroes[0],
-                'talents' => $talents,
-                'enemies' => $enemies,
-                'allies'  => $allies,
-            ]
-        );
-    
+        $expiresAt = now()->addDays(7);
+        Cache::put($id.'-allies', $allies, $expiresAt);
+        
+        return response()->json($allies);
     }
     
     /**
