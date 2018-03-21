@@ -10,6 +10,11 @@
 
     {{-- Laravel CSS that includes BS4 --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    {{-- Icons --}}
+    <link rel="stylesheet" href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/fork-awesome@1.0.11/css/fork-awesome.min.css" integrity="sha256-MGU/JUq/40CFrfxjXb5pZjpoZmxiP2KuICN5ElLFNd8=" crossorigin="anonymous">
+
     @yield('css')
 
     <title>
