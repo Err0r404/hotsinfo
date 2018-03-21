@@ -10,11 +10,7 @@
         <div class="col">
             @php
                 echo "<pre>";
-                print_r($hero);
-                echo "</pre>";
-
-                echo "<pre>";
-                print_r($talents);
+                print_r($enemies);
                 echo "</pre>";
             @endphp
         </div>
@@ -37,8 +33,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-5">
         <div class="col">
+            <h2>Talents</h2>
+
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
                     <thead class="thead-dark">
@@ -75,6 +73,98 @@
                                 </td>
                             </tr>
                         @endforeach
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Enemies</h3>
+
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Hero</th>
+                        <th>Game</th>
+                        <th>Winrate against {{ $hero->name }}</th>
+                    </tr>
+                    </thead>
+                    
+                    <tbody>
+                    @foreach($enemies as $key => $enemy)
+                        <tr>
+                            <td>
+                                <a href="{{ url('heroes/'.$enemy->id) }}">
+                                    <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$enemy->slug.'.jpg') }}" alt="{{ $enemy->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <a href="{{ url('heroes/'.$enemy->id) }}">
+                                    {{ $enemy->name }}
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <span data-toggle="tooltip" data-placement="top" data-container="body" title="{{ $enemy->games }}">
+                                    {{ $enemy->readable_games }}
+                                </span>
+                            </td>
+                            <td class="align-middle text-center">
+                                {{ $enemy->winrate }}%
+                                <div class="progress" style="height: 2px">
+                                    <div class="progress-bar @if($enemy->winrate >= 50) bg-success @else bg-danger @endif" role="progressbar" style="width: {{ $enemy->winrate }}%;" aria-valuenow="{{ $enemy->winrate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Allies</h3>
+
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Hero</th>
+                        <th>Game</th>
+                        <th>Winrate with {{ $hero->name }}</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    @foreach($allies as $key => $ally)
+                        <tr>
+                            <td>
+                                <a href="{{ url('heroes/'.$ally->id) }}">
+                                    <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$ally->slug.'.jpg') }}" alt="{{ $ally->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <a href="{{ url('heroes/'.$ally->id) }}">
+                                    {{ $ally->name }}
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <span data-toggle="tooltip" data-placement="top" data-container="body" title="{{ $ally->games }}">
+                                    {{ $ally->readable_games }}
+                                </span>
+                            </td>
+                            <td class="align-middle text-center">
+                                {{ $ally->winrate }}%
+                                <div class="progress" style="height: 2px">
+                                    <div class="progress-bar @if($ally->winrate >= 50) bg-success @else bg-danger @endif" role="progressbar" style="width: {{ $ally->winrate }}%;" aria-valuenow="{{ $ally->winrate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        </tr>
                     @endforeach
                     </tbody>
                 </table>

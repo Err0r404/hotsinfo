@@ -66,7 +66,6 @@ class HeroController extends Controller {
                 'heroes.id',
                 'heroes.name',
                 'heroes.games',
-                'heroes.games as readable_games',
                 DB::raw('ROUND((victories/games)*100,2) AS winrate'),
                 'roles.id as role_id',
                 'roles.name as role'
@@ -74,6 +73,7 @@ class HeroController extends Controller {
             ->where('heroes.id', $id)
             ->get();
         
+        // Format some data
         foreach ($heroes as $hero) {
             $hero->slug  = str_slug($hero->name);
             $hero->readable_games = $this->numbertoHumanReadableFormat($hero->games);
@@ -91,6 +91,7 @@ class HeroController extends Controller {
             )
             ->where('talents.hero_id', $id)
             ->groupBy('participation_talent.talent_id')
+            ->orderBy('talents.level')
             ->get();
 
         // Group talents by levels
@@ -99,6 +100,9 @@ class HeroController extends Controller {
             $list[$talent->level][] = $talent;
         }
         $talents = $list;
+        
+        // Sort talents by their levels
+        ksort($talents);
     
         // Calculate popularity of each talent by level
         foreach ($talents as $talentsList) {
@@ -108,12 +112,68 @@ class HeroController extends Controller {
                 $talent->popularity = round(($talent->pick/$sumPick)*100,2);
             }
         }
+        
+        // Get Heroes stats against the chosen Hero
+        $enemies = DB::table('participations')
+            ->join('games', 'participations.game_id', '=', 'games.id')
+            ->join('participations as p2', 'p2.game_id', '=', 'games.id')
+            ->join('heroes', 'p2.hero_id', '=', 'heroes.id')
+            ->select(
+                'heroes.id',
+                'heroes.name',
+                DB::raw('COUNT(1) AS games'),
+                //DB::raw("'All games' AS type"),
+                DB::raw('SUM(CASE WHEN p2.win = 1 THEN 1 ELSE 0 END) AS win'),
+                DB::raw('ROUND((SUM(CASE WHEN p2.win = 1 THEN 1 ELSE 0 END)/COUNT(1))*100,2) AS winrate')
+            )
+            ->where('participations.hero_id', '=', $id)
+            ->where('participations.win', '<>', DB::raw('`p2`.`win`'))
+            ->where('participations.id', '<>', DB::raw('`p2`.`id`'))
+            ->where('p2.hero_id', '<>', $id)
+            ->groupBy('heroes.id')
+            ->orderBy('games', 'desc')
+            ->orderBy('winrate', 'desc')
+            ->get();
+        
+        foreach ($enemies as $enemy){
+            $enemy->slug  = str_slug($enemy->name);
+            $enemy->readable_games = $this->numbertoHumanReadableFormat($enemy->games);
+        }
+    
+        // Get Heroes stats with the chosen Hero
+        $allies = DB::table('participations')
+            ->join('games', 'participations.game_id', '=', 'games.id')
+            ->join('participations as p2', 'p2.game_id', '=', 'games.id')
+            ->join('heroes', 'p2.hero_id', '=', 'heroes.id')
+            ->select(
+                'heroes.id',
+                'heroes.name',
+                DB::raw('COUNT(1) AS games'),
+                //DB::raw("'All games' AS type"),
+                DB::raw('SUM(CASE WHEN p2.win = 1 THEN 1 ELSE 0 END) AS win'),
+                DB::raw('ROUND((SUM(CASE WHEN p2.win = 1 THEN 1 ELSE 0 END)/COUNT(1))*100,2) AS winrate')
+            )
+            ->where('participations.hero_id', '=', $id)
+            ->where('participations.win', '=', DB::raw('`p2`.`win`'))
+            ->where('participations.id', '<>', DB::raw('`p2`.`id`'))
+            ->where('p2.hero_id', '<>', $id)
+            ->groupBy('heroes.id')
+            ->orderBy('games', 'desc')
+            ->orderBy('winrate', 'desc')
+            ->get();
+    
+        foreach ($allies as $ally){
+            $ally->slug  = str_slug($ally->name);
+            $ally->readable_games = $this->numbertoHumanReadableFormat($ally->games);
+        }
     
         return view(
             'heroes.show',
             [
                 'hero'    => $heroes[0],
                 'talents' => $talents,
+                'enemies' => $enemies,
+                'allies'  => $allies,
             ]
         );
     
