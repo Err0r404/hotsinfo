@@ -11,6 +11,10 @@
                 <li class="nav-item {{ Request::is('heroes*') ? ' active' : '' }}">
                     <a class="nav-link" href="{{ route('heroes') }}">Heroes</a>
                 </li>
+
+                <li class="nav-item {{ Request::is('players*') ? ' active' : '' }}">
+                    <a class="nav-link" href="{{ route('players') }}">Players</a>
+                </li>
             </ul>
         </div>
     </div>

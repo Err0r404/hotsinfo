@@ -22,6 +22,16 @@ Route::get('/heroes/{id}', 'HeroController@show');
 Route::get('/heroes/{id}/enemies', 'HeroController@enemies');
 Route::get('/heroes/{id}/allies', 'HeroController@allies');
 
+// Players
+Route::get('/players', function () {
+    return view('players.index');
+})->name('players');
+Route::get('/players/search', function(){
+    return redirect('/players');
+})->name('search');
+Route::post('/players/search', 'PlayerController@search');
+Route::get('/players/{id}', 'PlayerController@show');
+
 
 Route::resource('map', 'MapController');
 Route::resource('type', 'TypeController');
