@@ -16,6 +16,16 @@
                     <a class="nav-link" href="{{ route('players') }}">Players</a>
                 </li>
             </ul>
+
+            <form class="form-inline" action="{{ route('search') }}" method="post">
+                {{ csrf_field() }}
+
+                <input class="form-control mr-sm-2" type="search" id="player" name="player" placeholder="Search a player" aria-label="Search">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+                    <i class="fa ion-search mr-1"></i>
+                    Search
+                </button>
+            </form>
         </div>
     </div>
 </nav>
