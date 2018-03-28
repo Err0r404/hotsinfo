@@ -51,7 +51,7 @@ class PlayerController extends Controller {
                 'players.id',
                 'players.battletag',
                 'players.games',
-                DB::raw('ROUND((victories/games)*100,2) AS winrate'),
+                DB::raw('ROUND((victories/games)*100, 0) AS winrate'),
                 DB::raw('SUM(games.length) AS length')
             )
             ->where('players.id', $id)
@@ -93,6 +93,7 @@ class PlayerController extends Controller {
         $previousGameId = null;
         $firstKey = null;
         
+        // Reformat games to group players per parties : 1 game with 10 players instead of 10 games with 1 player
         foreach ($games as $key => $game) {
             
             if($game->id !== $previousGameId){
@@ -128,16 +129,40 @@ class PlayerController extends Controller {
             unset($game->silenced);
             unset($game->team);
             
-            // Format some data
+            // Pretty format some data
             $game->readable_length = $this->secondsToHumanReadableString($game->length);
             $game->ago = $this->datetimeToTimeAgo($game->date);
         }
+        
+        $mostPlayedHeroes = DB::table('participations')
+            ->join('heroes', 'participations.hero_id', 'heroes.id')
+            ->join('games', 'participations.game_id', 'games.id')
+            ->select(
+                'heroes.name',
+                'heroes.id',
+                DB::raw('COUNT(1) AS games'),
+                DB::raw('SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) AS win'),
+                DB::raw('ROUND(((SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END))/(COUNT(1)))*100, 0) AS winrate')
+            )
+            ->where('participations.player_id', $id)
+            ->groupBy('participations.hero_id')
+            ->orderby('games', 'desc')
+            ->get();
+    
+        foreach ($mostPlayedHeroes as $hero) {
+            $hero->slug = str_slug($hero->name);
+        }
+    
+        echo "<pre>";
+        print_r($mostPlayedHeroes);
+        echo "</pre>";
         
         return view(
             'players.show',
             [
                 'player' => $player,
                 'games'  => $games,
+                'heroes' => $mostPlayedHeroes,
             ]
         );
     

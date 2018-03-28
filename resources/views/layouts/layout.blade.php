@@ -34,6 +34,7 @@
 
 {{-- Laravel JS that includes BS4 --}}
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/plugins/paginathing/paginathing.js') }}"></script>
 @yield('script')
 </body>
 </html>

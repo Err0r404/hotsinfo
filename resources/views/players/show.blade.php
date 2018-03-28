@@ -30,6 +30,42 @@
         </div>
     </div>
 
+    <div class="row mb-5">
+        <div class="col">
+            <div class="table-responsive">
+                <table id="heroes" class="table table-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Hero</th>
+                        <th>Winrate</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($heroes as $key => $hero)
+                        <tr>
+                            <td class="align-middle">
+                                <a href="{{ url('heroes/'.$hero->id) }}">
+                                    <img class="rounded-circle" src="{{ URL::asset('/images/heroes/'.$hero->slug.'.jpg') }}" alt="{{ $hero->name }} hero from Heroes Of The Storm" style="max-width: 45px;">
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <a href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
+                            </td>
+                            <td class="align-middle text-center">
+                                <span class="d-block @if($hero->winrate >= 50) text-success @else text-danger @endif">{{ $hero->winrate }}%</span>
+                                <small>{{ $hero->games }} games</small>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+    </div>
+
     <div class="row">
         <div class="col">
             <div class="table-responsive">
@@ -119,4 +155,23 @@
             </nav>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        $(function () {
+            $('#heroes tbody').paginathing({
+                perPage        : 5,
+                insertAfter    : '#heroes',
+                limitPagination: 0,
+                firstLast      : false,
+                prevText       : 'Previous',
+                nextText       : 'Next',
+                ulClass        : 'pagination justify-content-end',
+                liClass        : 'page-item',
+                activeClass    : 'active',
+                disabledClass  : 'disabled'
+            });
+        });
+    </script>
 @endsection
