@@ -152,10 +152,6 @@ class PlayerController extends Controller {
         foreach ($mostPlayedHeroes as $hero) {
             $hero->slug = str_slug($hero->name);
         }
-    
-        echo "<pre>";
-        print_r($mostPlayedHeroes);
-        echo "</pre>";
         
         return view(
             'players.show',
