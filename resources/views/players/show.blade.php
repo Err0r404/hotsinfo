@@ -36,6 +36,7 @@
                 <table id="games" class="table table-sm">
                     <thead class="thead-dark">
                     <tr>
+                        <th>Map</th>
                         <th>Result</th>
                         <th>Length</th>
                         <th>Date</th>
@@ -46,6 +47,11 @@
                     <tbody>
                     @foreach($games as $game)
                         <tr>
+                            <td>
+                                <a href="{{ url('maps/'.$game->map_id) }}" class="text-dark">
+                                    {{ $game->map }}
+                                </a>
+                            </td>
                             <td>
                                 @if($game->win)
                                     <span class="badge badge-success">Victory</span>

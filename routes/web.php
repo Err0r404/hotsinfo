@@ -32,6 +32,10 @@ Route::get('/players/search', function(){
 Route::post('/players/search', 'PlayerController@search');
 Route::get('/players/{id}', 'PlayerController@show');
 
+// Maps
+Route::get('/maps', 'MapController@index')->name('maps');
+Route::get('/maps/{id}', 'MapController@show');
+
 
 Route::resource('map', 'MapController');
 Route::resource('type', 'TypeController');

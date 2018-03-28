@@ -71,10 +71,13 @@ class PlayerController extends Controller {
             ->join('participations as p2', 'games.id', '=', 'p2.game_id')
             ->join('players', 'p2.player_id', '=', 'players.id')
             ->join('heroes', 'p2.hero_id', '=', 'heroes.id')
+            ->join('maps', 'games.map_id', '=', 'maps.id')
             ->select(
                 'games.id',
                 'games.length',
                 'games.date',
+                'maps.id as map_id',
+                'maps.name as map',
                 'participations.win',
                 'p2.silenced',
                 'p2.team',
