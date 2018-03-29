@@ -50,7 +50,7 @@
                                 </a>
                             </td>
                             <td class="align-middle">
-                                <a href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
+                                <a class="text-dark" href="{{ url('heroes/'.$hero->id) }}">{{ $hero->name }}</a>
                             </td>
                             <td class="align-middle text-center">
                                 <span class="d-block @if($hero->winrate >= 50) text-success @else text-danger @endif">{{ $hero->winrate }}%</span>
@@ -62,7 +62,39 @@
                 </table>
             </div>
         </div>
-        <div class="col"></div>
+
+        <div class="col">
+            <div class="table-responsive">
+                <table id="maps" class="table table-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Map</th>
+                        <th>Winrate</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($maps as $key => $map)
+                        <tr>
+                            <td class="align-middle">
+                                <a href="{{ url('maps/'.$map->id) }}">
+                                    <img class="img-fluid" src="{{ URL::asset('/images/maps/'.$map->slug.'.jpg') }}" alt="{{ $map->name }} hero from Heroes Of The Storm" style="max-height: 45px;">
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <a class="text-dark" href="{{ url('maps/'.$map->id) }}">{{ $map->name }}</a>
+                            </td>
+                            <td class="align-middle text-center">
+                                <span class="d-block @if($map->winrate >= 50) text-success @else text-danger @endif">{{ $map->winrate }}%</span>
+                                <small>{{ $map->games }} games</small>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="col"></div>
     </div>
 
@@ -160,9 +192,9 @@
 @section('script')
     <script type="text/javascript">
         $(function () {
-            $('#heroes tbody').paginathing({
+            var defaultSettings = {
                 perPage        : 5,
-                insertAfter    : '#heroes',
+                insertAfter    : '',
                 limitPagination: 0,
                 firstLast      : false,
                 prevText       : 'Previous',
@@ -171,7 +203,13 @@
                 liClass        : 'page-item',
                 activeClass    : 'active',
                 disabledClass  : 'disabled'
-            });
+            };
+
+            defaultSettings.insertAfter = '#heroes';
+            $('#heroes tbody').paginathing(defaultSettings);
+
+            defaultSettings.insertAfter = '#maps';
+            $('#maps tbody').paginathing(defaultSettings);
         });
     </script>
 @endsection

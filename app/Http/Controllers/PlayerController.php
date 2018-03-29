@@ -136,7 +136,6 @@ class PlayerController extends Controller {
         
         $mostPlayedHeroes = DB::table('participations')
             ->join('heroes', 'participations.hero_id', 'heroes.id')
-            ->join('games', 'participations.game_id', 'games.id')
             ->select(
                 'heroes.name',
                 'heroes.id',
@@ -153,12 +152,32 @@ class PlayerController extends Controller {
             $hero->slug = str_slug($hero->name);
         }
         
+        $mostPlayedMaps = DB::table('participations')
+            ->join('games', 'participations.game_id', 'games.id')
+            ->join('maps', 'games.map_id', 'maps.id')
+            ->select(
+                'maps.id',
+                'maps.name',
+                DB::raw('COUNT(1) AS games'),
+                DB::raw('SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) AS win'),
+                DB::raw('ROUND(((SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END))/(COUNT(1)))*100, 0) AS winrate')
+            )
+            ->where('participations.player_id', $id)
+            ->groupBy('games.map_id')
+            ->orderby('games', 'desc')
+            ->get();
+    
+        foreach ($mostPlayedMaps as $map) {
+            $map->slug = str_slug($map->name);
+        }
+    
         return view(
             'players.show',
             [
                 'player' => $player,
                 'games'  => $games,
                 'heroes' => $mostPlayedHeroes,
+                'maps'   => $mostPlayedMaps,
             ]
         );
     
