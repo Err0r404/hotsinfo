@@ -68,6 +68,7 @@ class PlayerController extends Controller {
         
         $games = DB::table('games')
             ->join('participations', 'games.id', '=', 'participations.game_id')
+            ->join('heroes', 'participations.hero_id', '=', 'heroes.id')
             ->join('maps', 'games.map_id', '=', 'maps.id')
             ->select(
                 'games.id',
@@ -75,14 +76,12 @@ class PlayerController extends Controller {
                 'games.date',
                 'maps.id as map_id',
                 'maps.name as map',
-                'participations.win'
+                'participations.win',
+                'heroes.name as hero'
             )
             ->where('participations.player_id', $id)
             ->orderby('games.date', 'desc')
             ->paginate(10);
-    
-        $previousGameId = null;
-        $firstKey = null;
         
         // Reformat games to group players per parties : 1 game with 10 players instead of 10 games with 1 player
         foreach ($games as $key => $game) {

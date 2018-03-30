@@ -57,7 +57,7 @@
                         @foreach($talentsList as $key => $talent)
                             <tr>
                                 <td>
-                                    <img class="rounded" src="//via.placeholder.com/45x45" alt="{{ $talent->name }}">
+                                    <img class="rounded img-fluid" src="{{ URL::asset('/images/talents/'.str_slug($hero->name).'/'.str_slug($talent->name).'.png') }}" alt="{{ $talent->name }}" style="max-width: 45px;">
                                 </td>
                                 <td class="align-middle">
                                     <span  data-toggle="tooltip" data-placement="top" data-container="body" title="{{ $talent->description }}">

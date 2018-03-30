@@ -133,17 +133,19 @@
                                     {{ $game->ago }}
                                 </small>
                             </td>
+
                             <td class="align-middle text-center">
                                 <ul class="list-inline">
                                     @foreach($game->talents as $talent)
                                         <li class="list-inline-item">
                                             <span data-container="body" data-toggle="tooltip" data-placement="top" title="<span class='text-warning'>{{ $talent->name }}</span><br>{{ $talent->description }}" data-html="true">
-                                                <img src="//via.placeholder.com/45x45" alt="{{ $talent->name }}">
+                                                <img src="{{ URL::asset('/images/talents/'.str_slug($game->hero).'/'.str_slug($talent->name).'.png') }}" alt="{{ $talent->name }}" style="max-width: 45px;">
                                             </span>
                                         </li>
                                     @endforeach
                                 </ul>
                             </td>
+
                             <td>
                                 <ul class="list-unstyled mb-0">
                                     @foreach($game->teammates as $teammate)
