@@ -10,6 +10,7 @@
 
     {{-- Laravel CSS that includes BS4 --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/utilities.css') }}">
 
     {{-- Icons --}}
     <link rel="stylesheet" href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">

@@ -104,10 +104,8 @@
                 <table id="games" class="table table-sm">
                     <thead class="thead-dark">
                     <tr>
-                        <th>Map</th>
-                        <th>Result</th>
-                        <th>Length</th>
-                        <th>Date</th>
+                        <th>Game</th>
+                        <th>Talents</th>
                         <th colspan="2">Players</th>
                     </tr>
                     </thead>
@@ -115,24 +113,36 @@
                     <tbody>
                     @foreach($games as $game)
                         <tr>
-                            <td>
-                                <a href="{{ url('maps/'.$game->map_id) }}" class="text-dark">
+                            <td class="text-center align-middle text-white" style="background: url('{{ URL::asset('/images/maps/'.str_slug($game->map).'.jpg') }}'); background-size: cover;">
+                                <a href="{{ url('maps/'.$game->map_id) }}" class="mb-1 text-white font-weight-bold text-shadow">
                                     {{ $game->map }}
                                 </a>
-                            </td>
-                            <td>
+                                <br>
+
                                 @if($game->win)
-                                    <span class="badge badge-success">Victory</span>
+                                    <span class="badge badge-success text-uppercase mb-2">Victory</span>
                                 @else
-                                    <span class="badge badge-danger">Defeat</span>
+                                    <span class="badge badge-danger text-uppercase mb-2">Defeat</span>
                                 @endif
-                            </td>
-                            <td>
-                                {{ $game->readable_length }}</td>
-                            <td>
-                                <span data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $game->date }}">
+                                <br>
+
+                                <small class="text-shadow">{{ $game->readable_length }}</small>
+                                <br>
+
+                                <small class="text-shadow" data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $game->date }}">
                                     {{ $game->ago }}
-                                </span>
+                                </small>
+                            </td>
+                            <td class="align-middle text-center">
+                                <ul class="list-inline">
+                                    @foreach($game->talents as $talent)
+                                        <li class="list-inline-item">
+                                            <span data-container="body" data-toggle="tooltip" data-placement="top" title="<span class='text-warning'>{{ $talent->name }}</span><br>{{ $talent->description }}" data-html="true">
+                                                <img src="//via.placeholder.com/45x45" alt="{{ $talent->name }}">
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </td>
                             <td>
                                 <ul class="list-unstyled mb-0">
@@ -140,7 +150,7 @@
                                         @if($teammate->team === 0)
                                             <li>
                                                 <span data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $teammate->hero }}">
-                                                    <img class="rounded-circle img-fluid mr-1" src="{{ URL::asset('/images/heroes/'.$teammate->hero_slug.'.jpg') }}" alt="Portrait of {{ $teammate->hero }} from Heroes Of The Storm" style="max-width: 25px">
+                                                    <img class="rounded-circle img-fluid mr-1" src="{{ URL::asset('/images/heroes/'.str_slug($teammate->hero).'.jpg') }}" alt="Portrait of {{ $teammate->hero }} from Heroes Of The Storm" style="max-width: 25px">
                                                 </span>
 
                                                 @if($teammate->silenced == 1)
@@ -161,7 +171,7 @@
                                         @if($teammate->team === 1)
                                             <li>
                                                 <span data-container="body" data-toggle="tooltip" data-placement="top" title="{{ $teammate->hero }}">
-                                                    <img class="rounded-circle img-fluid mr-1" src="{{ URL::asset('/images/heroes/'.$teammate->hero_slug.'.jpg') }}" alt="Portrait of {{ $teammate->hero }} from Heroes Of The Storm" style="max-width: 25px">
+                                                    <img class="rounded-circle img-fluid mr-1" src="{{ URL::asset('/images/heroes/'.str_slug($teammate->hero).'.jpg') }}" alt="Portrait of {{ $teammate->hero }} from Heroes Of The Storm" style="max-width: 25px">
                                                 </span>
 
                                                 @if($teammate->silenced == 1)
